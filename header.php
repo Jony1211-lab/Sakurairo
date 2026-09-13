@@ -64,10 +64,10 @@ header('X-Frame-Options: SAMEORIGIN');
     <!-- 优化资源加载 -->
     <meta http-equiv="x-dns-prefetch-control" content="on">
     <link rel="preconnect" href="https://<?= esc_attr(iro_opt('gfonts_api', 'fonts.googleapis.com')); ?>">
-    <link rel="preconnect" href="https://s4.zstatic.net" crossorigin>
 
-    <link rel="preload" href="<?php echo (iro_opt('fontawesome_source','https://s4.zstatic.net/ajax/libs/font-awesome/6.7.2/css/all.min.css') ?? 'https://s4.zstatic.net/ajax/libs/font-awesome/6.7.2/css/all.min.css')?>" as="style">
-    <link rel="stylesheet" href="<?php echo (iro_opt('fontawesome_source','https://s4.zstatic.net/ajax/libs/font-awesome/6.7.2/css/all.min.css') ?? 'https://s4.zstatic.net/ajax/libs/font-awesome/6.7.2/css/all.min.css')?>" type="text/css" media="all" />
+    <?php $fontawesome_local = get_template_directory_uri() . '/assets/fontawesome/css/all.min.css'; ?>
+    <link rel="preload" href="<?php echo esc_url($fontawesome_local); ?>" as="style">
+    <link rel="stylesheet" href="<?php echo esc_url($fontawesome_local); ?>" type="text/css" media="all" />
     
     <link rel="shortcut icon" href="<?= esc_url(iro_opt('favicon_link', '')); ?>" />
     

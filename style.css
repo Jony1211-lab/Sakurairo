@@ -3911,32 +3911,18 @@ td.hljs-ln-numbers {
   pointer-events: none;
 }
 
-/* DIY: 播放器歌单切换（按钮集成在播放器 miniswitcher 右侧） */
-#aplayer-float .aplayer-body.has-playlist-tab .aplayer-miniswitcher {
-  border-radius: 0 !important;
-}
-
-.aplayer-playlist-tab {
-  position: absolute;
-  right: -18px;
-  top: 0;
-  width: 18px;
-  height: 66px;
-  background: #e6e6e6;
-  border-radius: 0 6px 6px 0;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.aplayer-playlist-tab:hover {
-  background: #d9d9d9;
-}
-
-.aplayer-playlist-tab i {
-  font-size: 11px;
+/* DIY: 播放器歌单切换（按钮由自建 APlayer fork 的控制栏模板输出） */
+#aplayer-float .aplayer-playlist-icon {
   color: #666;
+}
+
+#aplayer-playlist-icon svg {
+  width: 15px;
+  height: 15px;
+}
+
+#aplayer-float .aplayer-playlist-icon:hover {
+  color: #505050;
 }
 
 #aplayer-playlist-menu {

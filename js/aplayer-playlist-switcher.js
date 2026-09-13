@@ -104,23 +104,28 @@
     markActive();
   }
 
-  // 把切换按钮注入播放器本体（miniswitcher 右侧，样式由 style.css 提供）
-  function injectTab() {
-    var body = document.querySelector('#aplayer-float .aplayer-body');
-    if (!body || body.querySelector('.aplayer-playlist-tab')) return;
-    var btn = document.createElement('div');
-    btn.className = 'aplayer-playlist-tab';
-    btn.title = '切换歌单';
-    btn.setAttribute('role', 'button');
-    btn.setAttribute('aria-label', '切换歌单');
-    btn.innerHTML = '<i class="fa-solid fa-compact-disc"></i>';
-    btn.addEventListener('click', function (e) {
-      e.stopPropagation();
+  // 按钮来自自建 APlayer fork（Jony1211-lab/APlayer）的控制栏模板，
+  // 点击时播放器会派发 window 事件 aplayer:playlist-menu，这里响应并弹出菜单
+  function listenTab() {
+    if (listenTab.done) return;
+    listenTab.done = true;
+    window.addEventListener('aplayer:playlist-menu', function (e) {
       var menu = document.getElementById('aplayer-playlist-menu');
-      if (menu) menu.classList.toggle('open');
+      if (!menu) return;
+      var btn = e.detail && e.detail.button;
+      if (btn && btn.getBoundingClientRect) {
+        var r = btn.getBoundingClientRect();
+        menu.style.left = Math.max(6, Math.round(r.x)) + 'px';
+        menu.style.bottom = (window.innerHeight - r.y + 8) + 'px';
+      }
+      menu.classList.toggle('open');
     });
-    body.classList.add('has-playlist-tab');
-    body.appendChild(btn);
+    document.addEventListener('click', function (e) {
+      var menu = document.getElementById('aplayer-playlist-menu');
+      if (!menu) return;
+      var onTab = e.target.closest && e.target.closest('.aplayer-playlist-icon');
+      if (!menu.contains(e.target) && !onTab) menu.classList.remove('open');
+    });
   }
 
   function poll(fn, retries, interval) {
@@ -136,13 +141,10 @@
 
   function init() {
     buildMenu();
-    // footer.php 中播放器容器在脚本之后才输出，先等容器出现
+    listenTab();
+    // footer.php 中播放器容器在脚本之后才输出，先等容器出现再等播放器实例就绪
     poll(function () { return document.getElementById('aplayer-float'); }, 75, 200)
-      .then(function (float) {
-        injectTab();
-        new MutationObserver(function () { injectTab(); })
-          .observe(float, { childList: true, subtree: true });
-        // 等播放器实例就绪（首次拉取歌单完成）后再应用本地记住的选择
+      .then(function () {
         return poll(function () {
           var g = globals();
           var players = typeof g.getAPlayers === 'function' ? g.getAPlayers() : null;

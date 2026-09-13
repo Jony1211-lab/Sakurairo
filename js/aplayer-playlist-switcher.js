@@ -1,10 +1,13 @@
 /**
- * Sakurairo DIY: 页脚悬浮播放器多歌单切换
+ * Sakurairo DIY: 页脚悬浮播放器多歌单切换（切换按钮集成在播放器侧边）
  *
  * 依赖主题打包脚本(app.js)初始化播放器后在 window._sakurairo 上注册的全局工具函数：
  *   destroyAllAplayer() / loadAPlayer(audioArray) / getAPlayers()
  * 切换原理：拉取目标歌单的音频列表 → 销毁当前实例 → loadAPlayer 重建（重建会自动重新绑定歌词、悬停展开等行为）
  * 数据源沿用主题约定：_iro.meting_api_url（或全局 meting_api），按歌单替换 server / id 参数
+ *
+ * 按钮注入 .aplayer-body 内、miniswitcher 右侧；播放器 DOM 在每次切换/pjax 后都会重建，
+ * 因此用 MutationObserver 保证按钮常驻。歌单菜单挂在 body 上，不随播放器重建消失。
  */
 (function () {
   'use strict';
@@ -79,17 +82,8 @@
       .finally(function () { state.switching = false; });
   }
 
-  function buildUI() {
-    if (document.getElementById('aplayer-playlist-switcher')) return;
-    var wrap = document.createElement('div');
-    wrap.id = 'aplayer-playlist-switcher';
-
-    var btn = document.createElement('button');
-    btn.type = 'button';
-    btn.id = 'aplayer-playlist-btn';
-    btn.title = '切换歌单';
-    btn.innerHTML = '<i class="fa-solid fa-compact-disc"></i>';
-
+  function buildMenu() {
+    if (document.getElementById('aplayer-playlist-menu')) return;
     var menu = document.createElement('div');
     menu.id = 'aplayer-playlist-menu';
     PLAYLISTS.forEach(function (item, index) {
@@ -102,35 +96,59 @@
       });
       menu.appendChild(option);
     });
-
-    btn.addEventListener('click', function (e) {
-      e.stopPropagation();
-      menu.classList.toggle('open');
-    });
     document.addEventListener('click', function (e) {
-      if (!wrap.contains(e.target)) menu.classList.remove('open');
+      var onTab = e.target.closest && e.target.closest('.aplayer-playlist-tab');
+      if (!menu.contains(e.target) && !onTab) menu.classList.remove('open');
     });
-
-    wrap.appendChild(btn);
-    wrap.appendChild(menu);
-    document.body.appendChild(wrap);
+    document.body.appendChild(menu);
     markActive();
   }
 
-  function waitForPlayer(retries) {
-    var g = globals();
-    if (typeof g.getAPlayers === 'function') {
-      var players = g.getAPlayers();
-      if (players && players.length) return Promise.resolve();
-    }
-    if (retries <= 0) return Promise.reject(new Error('player not ready'));
-    return new Promise(function (resolve) { setTimeout(resolve, 400); })
-      .then(function () { return waitForPlayer(retries - 1); });
+  // 把切换按钮注入播放器本体（miniswitcher 右侧，样式由 style.css 提供）
+  function injectTab() {
+    var body = document.querySelector('#aplayer-float .aplayer-body');
+    if (!body || body.querySelector('.aplayer-playlist-tab')) return;
+    var btn = document.createElement('div');
+    btn.className = 'aplayer-playlist-tab';
+    btn.title = '切换歌单';
+    btn.setAttribute('role', 'button');
+    btn.setAttribute('aria-label', '切换歌单');
+    btn.innerHTML = '<i class="fa-solid fa-compact-disc"></i>';
+    btn.addEventListener('click', function (e) {
+      e.stopPropagation();
+      var menu = document.getElementById('aplayer-playlist-menu');
+      if (menu) menu.classList.toggle('open');
+    });
+    body.classList.add('has-playlist-tab');
+    body.appendChild(btn);
+  }
+
+  function poll(fn, retries, interval) {
+    return new Promise(function (resolve, reject) {
+      var result = fn();
+      if (result) return resolve(result);
+      if (retries <= 0) return reject(new Error('timeout'));
+      setTimeout(function () {
+        poll(fn, retries - 1, interval).then(resolve, reject);
+      }, interval);
+    });
   }
 
   function init() {
-    buildUI();
-    waitForPlayer(25)
+    buildMenu();
+    // footer.php 中播放器容器在脚本之后才输出，先等容器出现
+    poll(function () { return document.getElementById('aplayer-float'); }, 75, 200)
+      .then(function (float) {
+        injectTab();
+        new MutationObserver(function () { injectTab(); })
+          .observe(float, { childList: true, subtree: true });
+        // 等播放器实例就绪（首次拉取歌单完成）后再应用本地记住的选择
+        return poll(function () {
+          var g = globals();
+          var players = typeof g.getAPlayers === 'function' ? g.getAPlayers() : null;
+          return players && players.length ? true : null;
+        }, 25, 400);
+      })
       .then(function () {
         var saved = parseInt(localStorage.getItem(STORE_KEY), 10);
         if (isNaN(saved) || saved < 0 || saved >= PLAYLISTS.length) saved = 0;
@@ -141,11 +159,8 @@
           markActive();
         }
       })
-      .catch(function () {
-        // 播放器始终未就绪（如歌单接口异常），切换按钮没有意义，隐藏之
-        var wrap = document.getElementById('aplayer-playlist-switcher');
-        if (wrap) wrap.style.display = 'none';
-        console.warn('(PlaylistSwitcher) 播放器未就绪，歌单切换不可用');
+      .catch(function (err) {
+        console.warn('(PlaylistSwitcher) 播放器未就绪，歌单切换不可用:', err);
       });
   }
 

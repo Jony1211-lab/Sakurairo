@@ -3911,42 +3911,46 @@ td.hljs-ln-numbers {
   pointer-events: none;
 }
 
-/* DIY: 播放器歌单切换按钮 */
-#aplayer-playlist-switcher {
-  position: fixed;
-  left: 16px;
-  bottom: 90px;
-  z-index: 998;
+/* DIY: 播放器歌单切换（按钮集成在播放器 miniswitcher 右侧） */
+#aplayer-float .aplayer-body.has-playlist-tab .aplayer-miniswitcher {
+  border-radius: 0 !important;
 }
 
-#aplayer-playlist-btn {
-  width: 36px;
-  height: 36px;
-  border: none;
-  border-radius: 50%;
-  background: rgba(255, 255, 255, 0.9);
-  color: var(--theme-skin-matching, #505050);
-  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.15);
+.aplayer-playlist-tab {
+  position: absolute;
+  right: -18px;
+  top: 0;
+  width: 18px;
+  height: 66px;
+  background: #e6e6e6;
+  border-radius: 0 6px 6px 0;
   cursor: pointer;
-  font-size: 15px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
-#aplayer-playlist-btn:hover {
-  background: var(--theme-skin-matching, #505050);
-  color: #fff;
+.aplayer-playlist-tab:hover {
+  background: #d9d9d9;
+}
+
+.aplayer-playlist-tab i {
+  font-size: 11px;
+  color: #666;
 }
 
 #aplayer-playlist-menu {
-  position: absolute;
-  left: 0;
-  bottom: 44px;
-  min-width: 140px;
+  position: fixed;
+  left: 6px;
+  bottom: 76px;
+  min-width: 150px;
   max-width: 240px;
-  background: rgba(255, 255, 255, 0.95);
+  background: rgba(255, 255, 255, 0.96);
   border-radius: 10px;
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
   padding: 6px;
   display: none;
+  z-index: 999;
 }
 
 #aplayer-playlist-menu.open {

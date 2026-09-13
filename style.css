@@ -1274,6 +1274,19 @@ body.dark .site-footer a {
   color: var(--theme-skin-matching, #505050);
 }
 
+.footer-links {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.footer-links img {
+  width: 20px;
+  height: 20px;
+}
+
 .entry-census {
   font-size: 12px;
   margin: 0;

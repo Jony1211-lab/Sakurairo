@@ -23,9 +23,6 @@ $reception_background = iro_opt('reception_background');
           <?php if (iro_opt('footer_yiyan')): ?>
             <p id="footer_yiyan" class="hitokoto"></p>
           <?php endif; ?>
-          <?php if (!empty(iro_opt('footer_info', ''))): ?>
-            <p class="footer_info"><?php echo iro_opt('footer_info', ''); ?></p>
-          <?php endif; ?>
             <?php if (iro_opt('footer_load_occupancy', 'true')): ?>
               <p class="site-stats">
                 <?php printf(
@@ -44,6 +41,35 @@ $reception_background = iro_opt('reception_background');
               <span>提供 CDN 加速 / 云存储 服务</span>
             </p>
           <?php endif; ?>
+          <?php $footer_runtime_date = trim((string) iro_opt('footer_runtime_date', '')); if (iro_opt('footer_runtime', 'true') && $footer_runtime_date !== ''): ?>
+          <!-- 运行时间计数器 -->
+          <p id="site-runtime" class="runtime-counter"></p>
+          <style>
+            .runtime-counter {
+              text-align: center;
+              margin: 5px 0;
+            }
+          </style>
+          <script type="text/javascript">
+            function runtime(){
+              // 初始时间，月/日/年 时:分:秒 (设置您的建站日期)
+              X = new Date("<?php echo esc_js($footer_runtime_date); ?>");
+              Y = new Date();
+              T = (Y.getTime() - X.getTime());
+              M = 24 * 60 * 60 * 1000;
+              a = T / M;
+              A = Math.floor(a);
+              b = (a - A) * 24;
+              B = Math.floor(b);
+              c = (b - B) * 60;
+              C = Math.floor((b - B) * 60);
+              D = Math.floor((c - C) * 60);
+              // 信息写入到p标签中
+              document.getElementById("site-runtime").innerHTML = "本站勉强运行: " + A + "天" + B + "小时" + C + "分" + D + "秒";
+            }
+            setInterval(runtime, 1000);
+          </script>
+          <?php endif; ?>
         </div>
       
       <div class="theme-info">
@@ -58,9 +84,26 @@ $reception_background = iro_opt('reception_background');
               </svg>
             </div>
           <?php endif; ?>
-        <a href="https://github.com/mirai-mamori/Sakurairo" rel="noopener" target="_blank">Theme Sakurairo</a>
-        <a href="https://docs.fuukei.org/" rel="noopener" target="_blank">by Fuukei</a>
-      </div>
+          <?php
+          $footer_icp = trim((string) iro_opt('footer_icp', ''));
+          $footer_gongan = trim((string) iro_opt('footer_gongan', ''));
+          $footer_gongan_icon = trim((string) iro_opt('footer_gongan_icon', ''));
+          if ($footer_icp !== '' || $footer_gongan !== ''): ?>
+          <div class="footer-links">
+            <?php if ($footer_icp !== ''): ?>
+              <a href="https://beian.miit.gov.cn/" target="_blank" rel="noopener noreferrer"><?php echo esc_html($footer_icp); ?></a>
+            <?php endif; ?>
+            <?php if ($footer_gongan !== ''): ?>
+              <?php $footer_gongan_code = preg_replace('/\D/', '', $footer_gongan); ?>
+              <a<?php echo $footer_gongan_code !== '' ? ' href="https://beian.gov.cn/portal/registerSystemInfo?recordcode=' . esc_attr($footer_gongan_code) . '" target="_blank" rel="noopener noreferrer"' : ''; ?>>
+                <?php if ($footer_gongan_icon !== ''): ?><img src="<?php echo esc_url($footer_gongan_icon); ?>" alt="公安备案图标" /><?php endif; ?><?php echo esc_html($footer_gongan); ?>
+              </a>
+            <?php endif; ?>
+          </div>
+          <?php endif; ?>
+          <?php if (!empty(iro_opt('footer_info', ''))): ?>
+            <p class="footer_info"><?php echo iro_opt('footer_info', ''); ?></p>
+          <?php endif; ?>
     </div><!-- .site-info -->
   </footer><!-- #colophon -->
   </section><!-- #section -->

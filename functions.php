@@ -83,16 +83,8 @@ function UpdateCheck($url, $flag = 'Sakurairo')
         $flag
     );
 }
-switch (iro_opt('iro_update_source')) {
-    case 'github':
-        $iroThemeUpdateChecker = UpdateCheck('https://github.com/mirai-mamori/Sakurairo', 'Sakurairo');
-        break;
-    case 'upyun':
-        $iroThemeUpdateChecker = UpdateCheck('https://api.fuukei.org/update/jsdelivr.json');
-        break;
-    case 'official_building':
-        $iroThemeUpdateChecker = UpdateCheck('https://api.fuukei.org/update/' . iro_opt('iro_update_channel') . '/check.json');
-}
+// DIY: 更新检查固定指向本 fork，忽略后台“主题更新源”选项，避免官方更新覆盖本地修改
+$iroThemeUpdateChecker = UpdateCheck('https://github.com/Jony1211-lab/Sakurairo', 'Sakurairo');
 
 add_action('init', 'set_user_locale');
 function set_user_locale() {

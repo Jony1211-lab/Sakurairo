@@ -846,6 +846,53 @@ $prefix = 'iro_options';
       ),
 
       array(
+        'type' => 'subheading',
+        'content' => '备案信息',
+      ),
+
+      array(
+        'id' => 'footer_icp',
+        'type' => 'text',
+        'title' => 'ICP 备案号',
+        'desc' => '显示在页脚的 ICP 备案号，点击跳转至工信部备案查询网站，留空则不显示。例如：京ICP备12345678号',
+      ),
+
+      array(
+        'id' => 'footer_gongan',
+        'type' => 'text',
+        'title' => '公安备案号',
+        'desc' => '显示在页脚的公安备案号，备案号中的数字会自动用于生成公安备案查询链接，留空则不显示。例如：京公网安备 11010502012345号',
+      ),
+
+      array(
+        'id' => 'footer_gongan_icon',
+        'type' => 'text',
+        'title' => '公安备案图标',
+        'desc' => '公安备案号前显示的图标图片地址，留空则不显示图标。例如：/beian.png',
+      ),
+
+      array(
+        'type' => 'subheading',
+        'content' => '运行时间',
+      ),
+
+      array(
+        'id' => 'footer_runtime',
+        'type' => 'switcher',
+        'title' => '页脚运行时间',
+        'label' => '在页脚显示本站运行时间计数器，需填写建站时间',
+        'default' => true
+      ),
+
+      array(
+        'id' => 'footer_runtime_date',
+        'type' => 'text',
+        'title' => '建站时间',
+        'dependency' => array( 'footer_runtime', '==', 'true', '', 'true' ),
+        'desc' => '用于计算运行时间的起始时间，格式为 月/日/年 时:分:秒，例如：05/01/2023 8:00:00',
+      ),
+
+      array(
         'id' => 'footer_text_font',
         'type' => 'text',
         'title' => __('Footer Text Font','sakurairo_csf'),

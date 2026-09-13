@@ -127,6 +127,18 @@ function font_end_js_control()
         } else {
             $iro_opt['meting_api_url'] = rest_url('sakura/v1/meting/aplayer'); //使用内建
         }
+        $aplayer_playlists = array_values(array_filter((array) iro_opt('aplayer_playlists', []), function ($playlist) {
+            return !empty($playlist['id']);
+        }));
+        if ($aplayer_playlists) {
+            $iro_opt['aplayer_playlists'] = array_map(function ($playlist, $index) {
+                return array(
+                    'name'   => !empty($playlist['name']) ? $playlist['name'] : '歌单' . ($index + 1),
+                    'server' => !empty($playlist['server']) ? $playlist['server'] : 'netease',
+                    'id'     => $playlist['id'],
+                );
+            }, $aplayer_playlists, array_keys($aplayer_playlists));
+        }
     }
     if (iro_opt('code_highlight_method', 'hljs') == 'prism') {
         $iro_opt['code_highlight_prism'] = [

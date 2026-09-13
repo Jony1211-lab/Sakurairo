@@ -3911,6 +3911,69 @@ td.hljs-ln-numbers {
   pointer-events: none;
 }
 
+/* DIY: 播放器歌单切换按钮 */
+#aplayer-playlist-switcher {
+  position: fixed;
+  left: 16px;
+  bottom: 90px;
+  z-index: 998;
+}
+
+#aplayer-playlist-btn {
+  width: 36px;
+  height: 36px;
+  border: none;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.9);
+  color: var(--theme-skin-matching, #505050);
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.15);
+  cursor: pointer;
+  font-size: 15px;
+}
+
+#aplayer-playlist-btn:hover {
+  background: var(--theme-skin-matching, #505050);
+  color: #fff;
+}
+
+#aplayer-playlist-menu {
+  position: absolute;
+  left: 0;
+  bottom: 44px;
+  min-width: 140px;
+  max-width: 240px;
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 10px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+  padding: 6px;
+  display: none;
+}
+
+#aplayer-playlist-menu.open {
+  display: block;
+}
+
+.aplayer-playlist-item {
+  padding: 7px 12px;
+  border-radius: 6px;
+  font-size: 13px;
+  color: #505050;
+  cursor: pointer;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.aplayer-playlist-item:hover {
+  background: rgba(0, 0, 0, 0.06);
+}
+
+.aplayer-playlist-item.active {
+  color: var(--theme-skin-matching, #505050);
+  font-weight: bold;
+  background: rgba(0, 0, 0, 0.04);
+}
+
 .coverVideo-btn {
   all: initial;
   display: inline-block;

@@ -183,10 +183,15 @@ $reception_background = iro_opt('reception_background');
     <?php endif; ?>
   </div>
 </div>
-<?php if (iro_opt('aplayer_server') != 'off'): ?>
+<?php if (iro_opt('aplayer_server') != 'off'):
+  $aplayer_playlists = array_values(array_filter((array) iro_opt('aplayer_playlists', []), function ($playlist) {
+    return !empty($playlist['id']);
+  }));
+  $aplayer_first = !empty($aplayer_playlists[0]) ? $aplayer_playlists[0] : null;
+?>
   <div id="aplayer-float" style="z-index: 100;" class="aplayer"
-    data-id="<?php echo esc_attr(iro_opt('aplayer_playlistid', '')); ?>"
-    data-server="<?php echo esc_attr(iro_opt('aplayer_server')); ?>"
+    data-id="<?php echo esc_attr($aplayer_first ? $aplayer_first['id'] : iro_opt('aplayer_playlistid', '')); ?>"
+    data-server="<?php echo esc_attr($aplayer_first ? (!empty($aplayer_first['server']) ? $aplayer_first['server'] : 'netease') : iro_opt('aplayer_server')); ?>"
     data-preload="<?php echo esc_attr(iro_opt('aplayer_preload')); ?>"
     data-type="playlist"
     data-fixed="true"

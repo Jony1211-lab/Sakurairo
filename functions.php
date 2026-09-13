@@ -547,6 +547,10 @@ function sakura_scripts()
             //非主页的资源
             wp_enqueue_script('app-page', $core_lib_basepath . '/js/page.js', array('app', 'polyfills'), IRO_VERSION, true);
         }
+        if (iro_opt('aplayer_server') != 'off') {
+            //DIY: 播放器多歌单切换，须在app.js之后加载（依赖其注册的全局 _sakurairo 工具函数）
+            wp_enqueue_script('aplayer-playlist-switcher', get_template_directory_uri() . '/js/aplayer-playlist-switcher.js', array('app'), IRO_VERSION, true);
+        }
     }
     wp_enqueue_script('polyfills', $core_lib_basepath . '/js/polyfill.js', array(), IRO_VERSION, true);
     // defer加载

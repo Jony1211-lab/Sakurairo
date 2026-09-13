@@ -952,6 +952,39 @@ $prefix = 'iro_options';
       ),
 
       array(
+        'id'          => 'aplayer_playlists',
+        'type'        => 'repeater',
+        'title'       => '播放器歌单列表',
+        'dependency'  => array( 'aplayer_server', '!=', 'off', '', 'true' ),
+        'desc'        => '配置多个歌单后，页脚播放器上方会出现切换按钮，前端可自由切换，第一个为默认歌单；留空则沿用上方“歌单ID”单歌单模式',
+        'fields'      => array(
+          array(
+            'id'    => 'name',
+            'type'  => 'text',
+            'title' => '歌单名称',
+            'desc'  => '显示在切换菜单里',
+          ),
+          array(
+            'id'      => 'server',
+            'type'    => 'select',
+            'title'   => '音源',
+            'options' => array(
+              'netease' => '网易云',
+              'tencent' => 'QQ音乐',
+              'kugou'   => '酷狗',
+            ),
+            'default' => 'netease',
+          ),
+          array(
+            'id'    => 'id',
+            'type'  => 'text',
+            'title' => '歌单 ID',
+            'desc'  => '音乐平台歌单页地址中的数字 ID',
+          ),
+        ),
+      ),
+
+      array(
         'type'    => 'content',
         'content' => __('Click <a href="./admin.php?iro_act=playlist" target="_blank">here</a> to use the built-in meting-API to get the playlist info file template.Its content will be refreshed after the relevant settings are saved.',
         'sakurairo_csf'),

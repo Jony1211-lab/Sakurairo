@@ -60,6 +60,7 @@
     if (!menu) return;
     if (trigger) state.trigger = trigger;
     if (open) closeTrackLists();
+    menu.style.height = open ? Math.min(menu.scrollHeight + 1, 199) + 'px' : '0px';
     menu.classList.toggle('open', open);
     menu.setAttribute('aria-hidden', String(!open));
     Array.prototype.forEach.call(document.querySelectorAll('.aplayer-playlist-icon'), function (button) {
@@ -139,7 +140,23 @@
       option.type = 'button';
       option.className = 'aplayer-playlist-item';
       option.setAttribute('role', 'menuitemradio');
-      option.textContent = item.name;
+      option.setAttribute('aria-label', item.name);
+
+      var current = document.createElement('span');
+      current.className = 'aplayer-playlist-cur';
+      var number = document.createElement('span');
+      number.className = 'aplayer-playlist-index';
+      number.textContent = String(index + 1);
+      var title = document.createElement('span');
+      title.className = 'aplayer-playlist-title';
+      title.textContent = item.name;
+      var source = document.createElement('span');
+      source.className = 'aplayer-playlist-source';
+      source.textContent = { netease: '网易云', tencent: 'QQ音乐', kugou: '酷狗' }[item.server] || item.server || '';
+      option.appendChild(current);
+      option.appendChild(number);
+      option.appendChild(title);
+      option.appendChild(source);
       option.addEventListener('click', function () {
         setMenuOpen(false);
         if (index !== state.current) switchTo(index);
@@ -191,10 +208,15 @@
   function positionMenu(button) {
     var menu = document.getElementById('aplayer-playlist-menu');
     if (!menu || !button || !button.getBoundingClientRect) return;
-    var r = button.getBoundingClientRect();
-    var maxLeft = Math.max(8, window.innerWidth - menu.offsetWidth - 8);
-    menu.style.left = Math.min(Math.max(8, Math.round(r.left)), maxLeft) + 'px';
-    menu.style.bottom = Math.max(8, Math.round(window.innerHeight - r.top + 8)) + 'px';
+    var player = button.closest('.aplayer');
+    var body = player && player.querySelector('.aplayer-body');
+    if (!player || !body) return;
+    var playerRect = player.getBoundingClientRect();
+    var bodyRect = body.getBoundingClientRect();
+    menu.style.setProperty('--aplayer-playlist-theme', player.dataset.theme || '#ff9a9e');
+    menu.style.left = Math.round(playerRect.left) + 'px';
+    menu.style.width = Math.round(playerRect.width) + 'px';
+    menu.style.bottom = Math.round(window.innerHeight - bodyRect.top) + 'px';
   }
 
   function repositionMenu() {
@@ -202,41 +224,26 @@
     if (menu && menu.classList.contains('open')) positionMenu(state.trigger);
   }
 
-  function poll(fn, retries, interval) {
-    return new Promise(function (resolve, reject) {
-      var result = fn();
-      if (result) return resolve(result);
-      if (retries <= 0) return reject(new Error('timeout'));
-      setTimeout(function () {
-        poll(fn, retries - 1, interval).then(resolve, reject);
-      }, interval);
-    });
-  }
-
   function init() {
+    var playlistStateInitialized = false;
+
+    function initializePlaylistState() {
+      if (playlistStateInitialized || !getPlayers().length) return;
+      playlistStateInitialized = true;
+      var saved = parseInt(localStorage.getItem(STORE_KEY), 10);
+      if (isNaN(saved) || saved < 0 || saved >= PLAYLISTS.length) saved = 0;
+      if (saved > 0) {
+        switchTo(saved);
+      } else {
+        state.current = 0;
+        markActive();
+      }
+    }
+
     buildMenu();
     listenTab();
-    // footer.php 中播放器容器在脚本之后才输出，先等容器出现再等播放器实例就绪
-    poll(function () { return document.getElementById('aplayer-float'); }, 75, 200)
-      .then(function () {
-        return poll(function () {
-          var players = getPlayers();
-          return players && players.length ? true : null;
-        }, 25, 400);
-      })
-      .then(function () {
-        var saved = parseInt(localStorage.getItem(STORE_KEY), 10);
-        if (isNaN(saved) || saved < 0 || saved >= PLAYLISTS.length) saved = 0;
-        if (saved > 0) {
-          switchTo(saved);
-        } else {
-          state.current = 0;
-          markActive();
-        }
-      })
-      .catch(function (err) {
-        console.warn('(PlaylistSwitcher) 播放器未就绪，歌单切换不可用:', err);
-      });
+    window.addEventListener('sakurairo:aplayer-ready', initializePlaylistState);
+    initializePlaylistState();
   }
 
   init();

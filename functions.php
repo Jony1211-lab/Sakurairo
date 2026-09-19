@@ -490,6 +490,12 @@ add_action('after_setup_theme', 'akina_content_width', 0);
 /**
  * Enqueue scripts and styles.
  */
+function iro_asset_version($relative_path)
+{
+    $path = get_theme_file_path($relative_path);
+    return file_exists($path) ? (string) filemtime($path) : IRO_VERSION;
+}
+
 function sakura_scripts()
 {
     global $core_lib_basepath;
@@ -512,14 +518,14 @@ function sakura_scripts()
         if (strpos(get_option('permalink_structure'), 'index.php') !== false) {
             $index = 'index.php';
         }
-        $iro_css = $core_lib_basepath . '/css/' . $index . '?' . $sakura_header . '&' . $content_style . '&' . $wave . '&minify&' . IRO_VERSION;
+        $iro_css = $core_lib_basepath . '/css/' . $index . '?' . $sakura_header . '&' . $content_style . '&' . $wave . '&minify&' . iro_asset_version('style.css');
         add_action('wp_head', function() use ($iro_css) {
             echo '<link rel="preload" href="' .$iro_css. '" as="style" onload="this.onload=null;this.rel=\'stylesheet\'">';
             echo '<link rel="stylesheet" href="' . $iro_css . '">';
         }, 9);
 
     } else {        
-        wp_enqueue_style('iro-css', $core_lib_basepath . '/style.css', array(), IRO_VERSION);
+        wp_enqueue_style('iro-css', $core_lib_basepath . '/style.css', array(), iro_asset_version('style.css'));
         wp_enqueue_style('iro-codes', $core_lib_basepath . '/css/shortcodes.css', array(), IRO_VERSION);
         wp_enqueue_style('iro-dark', $core_lib_basepath . '/css/dark.css', array('iro-css'), IRO_VERSION);
         wp_enqueue_style('iro-responsive', $core_lib_basepath . '/css/responsive.css', array('iro-css'), IRO_VERSION);
@@ -542,17 +548,17 @@ function sakura_scripts()
     }
 
     if(!is_404()){
-        wp_enqueue_script('app', $core_lib_basepath . '/js/app.js', array('polyfills'), IRO_VERSION, true);
+        wp_enqueue_script('app', $core_lib_basepath . '/js/app.js', array('polyfills'), iro_asset_version('js/app.js'), true);
         if (!is_home()) {
             //非主页的资源
-            wp_enqueue_script('app-page', $core_lib_basepath . '/js/page.js', array('app', 'polyfills'), IRO_VERSION, true);
+            wp_enqueue_script('app-page', $core_lib_basepath . '/js/page.js', array('app', 'polyfills'), iro_asset_version('js/page.js'), true);
         }
         if (iro_opt('aplayer_server') != 'off') {
             //DIY: 播放器多歌单切换，须在app.js之后加载（依赖其注册的全局 _sakurairo 工具函数）
-            wp_enqueue_script('aplayer-playlist-switcher', get_template_directory_uri() . '/js/aplayer-playlist-switcher.js', array('app'), IRO_VERSION, true);
+            wp_enqueue_script('aplayer-playlist-switcher', get_template_directory_uri() . '/js/aplayer-playlist-switcher.js', array('app'), iro_asset_version('js/aplayer-playlist-switcher.js'), true);
         }
     }
-    wp_enqueue_script('polyfills', $core_lib_basepath . '/js/polyfill.js', array(), IRO_VERSION, true);
+    wp_enqueue_script('polyfills', $core_lib_basepath . '/js/polyfill.js', array(), iro_asset_version('js/polyfill.js'), true);
     // defer加载
     add_filter('script_loader_tag', function($tag, $handle) {
         if ('polyfills' === $handle) {

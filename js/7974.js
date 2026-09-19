@@ -1,2 +1,0 @@
-(globalThis.webpackChunksakurairo_scripts=globalThis.webpackChunksakurairo_scripts||[]).push([[7974],{7974:(a,r,s)=>{s.r(r),s.d(r,{default:()=>n});var i=s(2151);function n(a){const{label:r,centroid:s}=(0,i.IA)(a,8),n=Math.max(...r);return s[r.findIndex(a=>a==n)]}}}]);
-//# sourceMappingURL=7974.js.map

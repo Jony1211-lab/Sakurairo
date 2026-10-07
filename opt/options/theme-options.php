@@ -3901,7 +3901,7 @@ $prefix = 'iro_options';
         .'<br/><strong><a href="https://www.lightgalleryjs.com/demos/thumbnails/">Demos</a></strong> | <strong><a href="https://www.lightgalleryjs.com/docs/settings/">Reference</a></strong> | <strong><a href="https://fastly.jsdelivr.net/npm/lightgallery@latest/plugins/">Plugin List</a></strong> '
         .'<br/> Please write settings in JavaScript. An example has been provided as default setting.'
         .'<br/> It should be captiable for Most User using WordPress Guttenberg Editor.'
-        .'<br/>Submit new discussion on Github for assistance. https://github.com/mirai-mamori/Sakurairo/discussions','sakurairo_csf')       ,
+        .'<br/>Submit new issue on Github for assistance. https://github.com/Jony1211-lab/Sakurairo/issues','sakurairo_csf')       ,
         'dependency' => array( 'lightbox', '==', 'lightgallery', '', 'true' ),
       ),
 
@@ -4105,7 +4105,7 @@ $prefix = 'iro_options';
       array(
         'type'    => 'submessage',
         'style'   => 'normal',
-        'content' => sprintf(__('Theme Sakurairo Version %s | Internal Version %s | <a href="https://github.com/mirai-mamori/Sakurairo">Project Address</a>','sakurairo_csf'), IRO_VERSION, INT_VERSION), 
+        'content' => sprintf(__('Theme Sakurairo Version %s | Internal Version %s | <a href="https://github.com/Jony1211-lab/Sakurairo">Project Address</a> | Fork of <a href="https://github.com/mirai-mamori/Sakurairo">Sakurairo</a>','sakurairo_csf'), IRO_VERSION, INT_VERSION),
       ),
 
       array(
@@ -4261,7 +4261,7 @@ $prefix = 'iro_options';
 
       array(
         'type'    => 'content',
-        'content' => __('<img src="https://img.shields.io/github/v/release/mirai-mamori/Sakurairo.svg?style=flat-square"  alt="Theme latest version" style="border-radius: 3px;" />  <img src="https://img.shields.io/github/release-date/mirai-mamori/Sakurairo?style=flat-square"  alt="Theme latest version release date" style="border-radius: 3px;" />  <img src="https://data.jsdelivr.com/v1/package/gh/mirai-mamori/Sakurairo/badge"  alt="Theme CDN resource access" style="border-radius: 3px;" />','sakurairo_csf'),
+        'content' => __('<img src="https://img.shields.io/github/v/release/Jony1211-lab/Sakurairo.svg?style=flat-square"  alt="Theme latest version" style="border-radius: 3px;" />  <img src="https://img.shields.io/github/release-date/Jony1211-lab/Sakurairo?style=flat-square"  alt="Theme latest version release date" style="border-radius: 3px;" />  <img src="https://img.shields.io/github/last-commit/Jony1211-lab/Sakurairo?style=flat-square"  alt="Last commit" style="border-radius: 3px;" />','sakurairo_csf'),
       ),
 
     )

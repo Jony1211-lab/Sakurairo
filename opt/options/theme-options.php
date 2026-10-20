@@ -1000,6 +1000,15 @@ $prefix = 'iro_options';
       ),
 
       array(
+        'id' => 'aplayer_auto_hide',
+        'type' => 'switcher',
+        'title' => '悬浮播放器自动隐藏',
+        'dependency' => array( 'aplayer_server', '!=', 'off', '', 'true' ),
+        'desc' => '开启后播放器收起为左侧露出一条的悬浮条（原版行为），鼠标悬停或点击收起按钮时展开；关闭则页面打开时直接完整显示播放器',
+        'default' => true
+      ),
+
+      array(
         'id' => 'aplayer_playlistid',
         'type' => 'text',
         'title' => __('Footer Online Music Player Songlist ID','sakurairo_csf'),

@@ -122,6 +122,7 @@ function font_end_js_control()
     }
     if (iro_opt('aplayer_server') != 'off') {
         $iro_opt['float_player_on'] = true;
+        $iro_opt['float_player_auto_hide'] = check(iro_opt('aplayer_auto_hide', true)); //悬浮播放器是否自动隐藏
         if (!empty(iro_opt('custom_music_api'))) {
             $iro_opt['meting_api_url'] = iro_opt('custom_music_api'); //使用外部api/歌单
         } else {
